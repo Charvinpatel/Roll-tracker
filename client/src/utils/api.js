@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: '/api' });
+const API = axios.create({ baseURL: 'https://roll-tracker.onrender.com/api' });
 
 export const vendorAPI = {
   getAll: () => API.get('/vendors'),
