@@ -23,32 +23,40 @@ router.get('/summary', async (req, res) => {
     const rollsWithVendors = totalDispatched - totalReturned;
     const availableRolls = totalStock - rollsWithVendors;
 
-    // Per-vendor summary
-    const vendors = await Vendor.find({ isActive: true });
-    const vendorStats = await Promise.all(vendors.map(async (v) => {
-      const vDispatched = await Dispatch.aggregate([
-        { $match: { vendor: v._id } },
-        { $group: { _id: null, total: { $sum: '$quantity' } } }
-      ]);
-      const vReturned = await Return.aggregate([
-        { $match: { vendor: v._id } },
-        { $group: { _id: null, total: { $sum: '$quantity' } } }
-      ]);
-      const dispatched = vDispatched[0]?.total || 0;
-      const returned = vReturned[0]?.total || 0;
-      const lastDispatch = await Dispatch.findOne({ vendor: v._id }).sort({ dispatchDate: -1 });
-      const lastReturn = await Return.findOne({ vendor: v._id }).sort({ returnDate: -1 });
+    // Per-vendor summary using mass aggregation
+    const vendors = await Vendor.find({ isActive: true }).lean();
+    
+    const dispatchStats = await Dispatch.aggregate([
+      { $group: { 
+          _id: '$vendor', 
+          total: { $sum: '$quantity' },
+          lastDate: { $max: '$dispatchDate' }
+      }}
+    ]);
+
+    const returnStats = await Return.aggregate([
+      { $group: { 
+          _id: '$vendor', 
+          total: { $sum: '$quantity' },
+          lastDate: { $max: '$returnDate' }
+      }}
+    ]);
+
+    const dMap = dispatchStats.reduce((acc, s) => { acc[s._id] = s; return acc; }, {});
+    const rMap = returnStats.reduce((acc, s) => { acc[s._id] = s; return acc; }, {});
+
+    const vendorStats = vendors.map(v => {
+      const d = dMap[v._id] || { total: 0, lastDate: null };
+      const r = rMap[v._id] || { total: 0, lastDate: null };
       return {
-        _id: v._id,
-        name: v.name,
-        phone: v.phone,
-        totalDispatched: dispatched,
-        totalReturned: returned,
-        rollsWithVendor: dispatched - returned,
-        lastDispatchDate: lastDispatch?.dispatchDate || null,
-        lastReturnDate: lastReturn?.returnDate || null,
+        ...v,
+        totalDispatched: d.total,
+        totalReturned: r.total,
+        rollsWithVendor: d.total - r.total,
+        lastDispatchDate: d.lastDate,
+        lastReturnDate: r.lastDate,
       };
-    }));
+    });
 
     res.json({
       totalStock,
