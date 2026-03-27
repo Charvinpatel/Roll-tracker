@@ -55,8 +55,11 @@ export default function Vendors() {
           return (
             <div className="vendor-card" key={v._id}>
               <h4>{v.name}</h4>
-              <div style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'IBM Plex Mono, monospace', marginBottom: 14 }}>
+              <div style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'IBM Plex Mono, monospace', marginBottom: 4 }}>
                 📞 {v.phone || 'N/A'}
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 14 }}>
+                📍 {v.address || 'No address'}
               </div>
               <div className="vendor-mini-stats">
                 <div className="vms"><div className="vms-val" style={{ color: 'var(--accent)' }}>{s.disp}</div><div className="vms-label">Sent</div></div>
