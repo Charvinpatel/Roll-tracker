@@ -8,4 +8,7 @@ const dispatchSchema = new mongoose.Schema({
   status: { type: String, enum: ['pending', 'delivered', 'cancelled'], default: 'delivered' },
 }, { timestamps: true });
 
+dispatchSchema.index({ vendor: 1 });
+dispatchSchema.index({ dispatchDate: -1 });
+
 module.exports = mongoose.model('Dispatch', dispatchSchema);
