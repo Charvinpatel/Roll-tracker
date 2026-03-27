@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { vendorAPI, dispatchAPI, returnAPI } from '../utils/api';
+import { vendorAPI, dispatchAPI, returnAPI, inventoryAPI } from '../utils/api';
 import toast from 'react-hot-toast';
 import VendorModal from '../components/VendorModal';
 import DispatchModal from '../components/DispatchModal';
