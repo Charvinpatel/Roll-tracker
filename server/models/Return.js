@@ -7,4 +7,7 @@ const returnSchema = new mongoose.Schema({
   notes: { type: String, trim: true },
 }, { timestamps: true });
 
+returnSchema.index({ vendor: 1 });
+returnSchema.index({ returnDate: -1 });
+
 module.exports = mongoose.model('Return', returnSchema);
