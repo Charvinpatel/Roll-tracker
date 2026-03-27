@@ -14,16 +14,11 @@ export default function Vendors() {
 
   const load = async () => {
     try {
-      const { data } = await vendorAPI.getAll();
-      setVendors(data);
-      // Load stats per vendor
-      const allDisp = await dispatchAPI.getAll();
-      const allRet = await returnAPI.getAll();
+      const { data } = await inventoryAPI.getSummary();
+      setVendors(data.vendorStats);
       const s = {};
-      data.forEach(v => {
-        const disp = allDisp.data.filter(d => (d.vendor?._id || d.vendor) === v._id).reduce((a, d) => a + d.quantity, 0);
-        const ret = allRet.data.filter(r => (r.vendor?._id || r.vendor) === v._id).reduce((a, r) => a + r.quantity, 0);
-        s[v._id] = { disp, ret, hold: disp - ret };
+      data.vendorStats.forEach(v => {
+        s[v._id] = { disp: v.totalDispatched, ret: v.totalReturned, hold: v.rollsWithVendor };
       });
       setStats(s);
     } catch (err) {
