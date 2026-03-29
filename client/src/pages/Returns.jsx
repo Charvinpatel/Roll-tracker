@@ -9,6 +9,7 @@ export default function Returns() {
   const [returns, setReturns] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [filterVendor, setFilterVendor] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [modal, setModal] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
@@ -40,6 +41,13 @@ export default function Returns() {
           <div className="page-sub">Empty rolls returned by vendors</div>
         </div>
         <div className="flex-gap">
+          <input 
+            type="text" 
+            placeholder="Search returns..." 
+            className="search-bar"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           <select className="search-bar" value={filterVendor} onChange={e => setFilterVendor(e.target.value)} style={{ width: 'auto' }}>
             <option value="">All Vendors</option>
             {vendors.map(v => <option key={v._id} value={v._id}>{v.name}</option>)}
@@ -57,9 +65,15 @@ export default function Returns() {
               </tr>
             </thead>
             <tbody>
-              {returns.length === 0 ? (
+              {returns.filter(r => 
+                (r.vendor?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (r.notes || '').toLowerCase().includes(searchQuery.toLowerCase())
+              ).length === 0 ? (
                 <tr><td colSpan="5"><div className="empty">No returns recorded</div></td></tr>
-              ) : returns.map(r => (
+              ) : returns.filter(r => 
+                (r.vendor?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (r.notes || '').toLowerCase().includes(searchQuery.toLowerCase())
+              ).map(r => (
                 <tr key={r._id}>
                   <td><b>{r.vendor?.name || '—'}</b></td>
                   <td><span className="badge badge-green">{r.quantity} rolls</span></td>
@@ -82,7 +96,13 @@ export default function Returns() {
           </table>
         </div>
         <div className="record-list">
-          {returns.length === 0 ? <div className="empty">No returns recorded</div> : returns.map(r => (
+          {returns.filter(r => 
+            (r.vendor?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (r.notes || '').toLowerCase().includes(searchQuery.toLowerCase())
+          ).length === 0 ? <div className="empty">No returns recorded</div> : returns.filter(r => 
+            (r.vendor?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (r.notes || '').toLowerCase().includes(searchQuery.toLowerCase())
+          ).map(r => (
             <div key={r._id} className="rc">
               <div className="flex-between" style={{ marginBottom: 6 }}>
                 <b>{r.vendor?.name || '—'}</b>
