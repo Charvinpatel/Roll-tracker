@@ -9,6 +9,7 @@ export default function Dispatches() {
   const [dispatches, setDispatches] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [filterVendor, setFilterVendor] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [modal, setModal] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
@@ -40,6 +41,13 @@ export default function Dispatches() {
           <div className="page-sub">Filled rolls sent to vendors</div>
         </div>
         <div className="flex-gap">
+          <input 
+            type="text" 
+            placeholder="Search dispatches..." 
+            className="search-bar"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           <select className="search-bar" value={filterVendor} onChange={e => setFilterVendor(e.target.value)} style={{ width: 'auto' }}>
             <option value="">All Vendors</option>
             {vendors.map(v => <option key={v._id} value={v._id}>{v.name}</option>)}
@@ -57,9 +65,15 @@ export default function Dispatches() {
               </tr>
             </thead>
             <tbody>
-              {dispatches.length === 0 ? (
+              {dispatches.filter(d => 
+                (d.vendor?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (d.notes || '').toLowerCase().includes(searchQuery.toLowerCase())
+              ).length === 0 ? (
                 <tr><td colSpan="6"><div className="empty">No dispatches found</div></td></tr>
-              ) : dispatches.map(d => (
+              ) : dispatches.filter(d => 
+                (d.vendor?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (d.notes || '').toLowerCase().includes(searchQuery.toLowerCase())
+              ).map(d => (
                 <tr key={d._id}>
                   <td><b>{d.vendor?.name || '—'}</b></td>
                   <td><span className="badge badge-yellow">{d.quantity} rolls</span></td>
@@ -83,7 +97,13 @@ export default function Dispatches() {
           </table>
         </div>
         <div className="record-list">
-          {dispatches.length === 0 ? <div className="empty">No dispatches found</div> : dispatches.map(d => (
+          {dispatches.filter(d => 
+            (d.vendor?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (d.notes || '').toLowerCase().includes(searchQuery.toLowerCase())
+          ).length === 0 ? <div className="empty">No dispatches found</div> : dispatches.filter(d => 
+            (d.vendor?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (d.notes || '').toLowerCase().includes(searchQuery.toLowerCase())
+          ).map(d => (
             <div key={d._id} className="rc">
               <div className="flex-between" style={{ marginBottom: 6 }}>
                 <b>{d.vendor?.name || '—'}</b>
