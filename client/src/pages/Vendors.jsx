@@ -11,6 +11,7 @@ export default function Vendors() {
   const [stats, setStats] = useState({});
   const [modal, setModal] = useState(null); // null | {type, data}
   const [confirmDelete, setConfirmDelete] = useState(null); // null | id
+  const [searchQuery, setSearchQuery] = useState('');
 
   const load = async () => {
     try {
@@ -41,11 +42,24 @@ export default function Vendors() {
           <div className="page-title">Vendors</div>
           <div className="page-sub">Manage your vendors and their roll balances</div>
         </div>
-        <button className="btn btn-primary" onClick={() => setModal({ type: 'vendor', data: null })}>+ Add Vendor</button>
+        <div className="flex-gap">
+          <input 
+            type="text" 
+            placeholder="Search vendors..." 
+            className="search-bar"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button className="btn btn-primary" onClick={() => setModal({ type: 'vendor', data: null })}>+ Add Vendor</button>
+        </div>
       </div>
 
       <div className="vendor-grid">
-        {vendors.map(v => {
+        {vendors.filter(v => 
+          v.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          (v.phone && v.phone.includes(searchQuery)) ||
+          (v.address && v.address.toLowerCase().includes(searchQuery.toLowerCase()))
+        ).map(v => {
           const s = stats[v._id] || { disp: 0, ret: 0, hold: 0 };
           return (
             <div className="vendor-card" key={v._id}>
