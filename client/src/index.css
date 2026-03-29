@@ -110,6 +110,8 @@ td { padding: 14px 20px; font-size: 13.5px; }
 .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
 .search-bar { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; color: var(--text); font-family: 'Manrope', sans-serif; font-size: 13px; outline: none; transition: border 0.15s; }
 .search-bar:focus { border-color: var(--accent); }
+.header-actions-group { display: flex; gap: 10px; align-items: center; }
+.search-filter-group { display: flex; gap: 10px; align-items: center; }
 .date-btn { background: none; border: none; border-bottom: 1px dashed var(--muted); color: var(--text); cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; padding: 0 0 2px; }
 .date-btn:hover { color: var(--accent); border-color: var(--accent); }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; }
@@ -173,6 +175,10 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cur
   .vendor-card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
   .flex-between { flex-direction: column; align-items: stretch; gap: 9px; }
   .flex-between .flex-gap { width: 100%; }
+  .header-actions-group { flex-direction: column-reverse; width: 100%; gap: 12px; }
+  .search-filter-group { flex-direction: column; width: 100%; gap: 8px; }
+  .search-filter-group .search-bar { width: 100%; }
+  .header-actions-group .btn { width: 100%; justify-content: center; }
   .card-head { flex-direction: column; align-items: stretch; }
   .card-head .btn { width: 100%; }
   .modal-actions { grid-template-columns: 1fr 1fr; gap: 10px; }
